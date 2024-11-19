@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Living Room Energy Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+
+    .living-room {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  border: 2px solid #ccc;
+  background: url(https://static.vecteezy.com/system/resources/thumbnails/014/744/307/small_2x/place-to-exercise-at-home-flat-color-illustration-sports-gym-with-dumbbells-and-water-bottle-active-lifestyle-fully-editable-2d-simple-cartoon-interior-with-living-room-on-background-vector.jpg) no-repeat center center;
+  background-size: cover;
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+
+    .appliance {
+      position: absolute;
+      width: 100px;
+      height: 120px;
+      cursor: grab;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .appliance img {
+      border: 2px solid #a91f0a;
+      width: 150%;
+      height: 150;
+    }
+
+    .appliance input {
+      width: 80px;
+      margin-top: 5px;
+      text-align: center;
+    }
+
+    .controls {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .controls button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .controls button:hover {
+      background-color: #0056b3;
+    }
+
+    .total-energy {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Living Room Energy Simulator</h1>
+
+  <div class="living-room" id="livingRoom">
+    <div class="appliance" id="tv" draggable="true" style="left: 100px; top: 100px;">
+      <img src="https://img.freepik.com/free-vector/retro-purple-television-vector-illustration_1308-163595.jpg" alt="TV">
+      <input type="number" id="tvKw" placeholder="kW/month" value="0">
+    </div>
+    <div class="appliance" id="aircon" draggable="true" style="left: 200px; top: 50px;">
+      <img src="https://img.freepik.com/premium-vector/air-conditioner-isolated-white-background-realistic-vector-illustration_1011260-164.jpg" alt="Air Conditioner">
+      <input type="number" id="airconKw" placeholder="kW/month" value="0">
+    </div>
+    <div class="appliance" id="fan" draggable="true" style="left: 350px; top: 50px;">
+      <img src="https://static.vecteezy.com/system/resources/thumbnails/035/687/079/original/electric-fan-icon-rotates-blower-blades-to-provide-cooling-2d-animation-video.jpg" alt="Electric Fan">
+      <input type="number" id="fanKw" placeholder="kW/month" value="0">
+    </div>
+    <div class="appliance" id="jumper" draggable="true" style="left: 500px; top: 50px;">
+      <img src="https://m.media-amazon.com/images/I/71smAIrllnL.jpg" alt="Jumper Cable">
+      <input type="number" id="jumperKw" placeholder="kW/month" value="0">
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="calculateEnergy()">Calculate Total Energy</button>
+  </div>
+
+  <div class="total-energy" id="totalEnergy">
+    Total Energy: 0 kW/month
+  </div>
+
+  <script>
+    // Drag-and-drop functionality
+    const livingRoom = document.getElementById('livingRoom');
+    const appliances = document.querySelectorAll('.appliance');
+
+    appliances.forEach(appliance => {
+      appliance.addEventListener('dragstart', dragStart);
+      appliance.addEventListener('dragend', dragEnd);
+    });
+
+    livingRoom.addEventListener('dragover', dragOver);
+    livingRoom.addEventListener('drop', drop);
+
+    let draggedItem = null;
+
+    function dragStart(e) {
+      draggedItem = this;
+    }
+
+    function dragEnd() {
+      draggedItem = null;
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      const rect = livingRoom.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      draggedItem.style.left = `${x - draggedItem.offsetWidth / 2}px`;
+      draggedItem.style.top = `${y - draggedItem.offsetHeight / 2}px`;
+    }
+
+    // Calculate total energy consumption
+    function calculateEnergy() {
+      const tvKw = parseFloat(document.getElementById('tvKw').value) || 0;
+      const airconKw = parseFloat(document.getElementById('airconKw').value) || 0;
+      const fanKw = parseFloat(document.getElementById('fanKw').value) || 0;
+      const jumperKw = parseFloat(document.getElementById('jumperKw').value) || 0;
+
+      const total = tvKw + airconKw + fanKw + jumperKw;
+      document.getElementById('totalEnergy').innerText = `Total Energy: ${total.toFixed(2)} kW/month`;
+    }
+  </script>
+</body>
+</html>
